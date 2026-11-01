@@ -15,8 +15,8 @@ const DEFAULT_SYSTEM =
 let DEFAULT_MODEL = 'glm-5.3:cloud'; // overridden by /skynet.json (SKYNET_MODEL on the server)
 
 const DEFAULT_OPTS = {
-  temperature: 0.7, top_p: 0.9, top_k: 40, min_p: 0, repeat_penalty: 1.1,
-  num_ctx: 8192, num_predict: -1, seed: '',
+  temperature: 0.7, top_p: 0.9, top_k: 40, min_p: 0.24, repeat_penalty: 1.14,
+  num_ctx: 262144, num_predict: -1, seed: '',
 };
 
 const PARAMS = [
@@ -50,7 +50,7 @@ function loadState() {
   s.history = Array.isArray(s.history) ? s.history : [];
   s.settings = Object.assign({
     model: '', system: DEFAULT_SYSTEM, think: true, keepAlive: '5m',
-    theme: 'red', sound: true, quickBoot: false,
+    theme: 'green', sound: true, quickBoot: false,
   }, s.settings || {});
   s.settings.options = Object.assign({}, DEFAULT_OPTS, s.settings.options || {});
   return s;
