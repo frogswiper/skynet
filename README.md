@@ -3,7 +3,7 @@
 A 1984 Cyberdyne-style phosphor HUD for Ollama. It runs full screen, boots on the SKYNET logo,
 and talks to local or Ollama cloud models. By default it uses the newest **GLM cloud model**.
 
-## Install (one line)
+## Install on Linux / macOS (one line)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/frogswiper/skynet/main/install.sh | bash
@@ -28,6 +28,29 @@ Options (set before `bash`, e.g. `curl … | SKYNET_MODEL=glm-5.2:cloud bash`):
 | `SKYNET_NO_LAUNCH` | — | set to `1` to skip launching at the end |
 
 Settings are saved in `~/.config/skynet/skynet.env`. Run the one-liner again to update.
+
+## Install on Windows 10 / 11
+
+Open **PowerShell** (a normal window, not as administrator) and run:
+
+```powershell
+irm https://raw.githubusercontent.com/frogswiper/skynet/main/install.ps1 | iex
+```
+
+The Windows installer:
+
+1. installs **Ollama** if it isn't present (winget, or the official `OllamaSetup.exe`)
+2. starts the Ollama server if it isn't running
+3. runs `ollama signin`. If a link is shown, open it, approve, and the install continues
+4. finds the **newest GLM cloud model** on ollama.com and pulls it
+5. uses Node.js 18+ if it is installed; otherwise it downloads a checksum-verified Node 22
+   into `%LOCALAPPDATA%\skynet\node` (no admin)
+6. installs SKYNET to `%LOCALAPPDATA%\skynet\app`, saves settings to `%APPDATA%\skynet\skynet.env`, adds
+   **Start Menu and desktop shortcuts** and the `skynet` command (new terminals), then launches it
+
+It opens full screen in its own **Edge** kiosk window (Chrome or Brave if Edge is missing), with
+autoplay allowed. Esc exits; Alt+F4 also works. Set options the same way as on Linux, e.g.
+`$env:SKYNET_MODEL = 'glm-5.2:cloud'; irm … | iex`. Run the one-liner again to update.
 
 ## Run
 
