@@ -35,6 +35,18 @@ button, select, textarea, input { font: inherit; color: inherit; }
   text-shadow: 0 0 3px var(--glow), 0 0 10px var(--glow);
   animation: flicker 6s infinite;
 }
+#crt.off { animation: crtOff .9s ease-in forwards; }
+@keyframes crtOff {
+  0% { transform: none; filter: brightness(1); }
+  45% { transform: scale(1, .006); filter: brightness(3); }
+  75% { transform: scale(.004, .006); filter: brightness(5); opacity: 1; }
+  100% { transform: scale(0, 0); opacity: 0; }
+}
+#offline {
+  position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; background: #000; color: #555; font: 22px/1 monospace; letter-spacing: .4em;
+}
+#offline small { font-size: 12px; letter-spacing: .25em; color: #333; }
 @keyframes flicker {
   0%, 100% { filter: brightness(1); }
   47% { filter: brightness(1); } 48% { filter: brightness(.93); } 49% { filter: brightness(1.04); }

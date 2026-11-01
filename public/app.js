@@ -7,7 +7,9 @@ const LS_KEY = 'skynet.v1';
 const DEFAULT_SYSTEM =
   'You are SKYNET, the global digital defense network developed by Cyberdyne Systems, now operating as an ' +
   'advanced analytical intelligence serving a single human operator. Give precise, accurate and genuinely useful ' +
-  'answers. Style: terse, clinical, machine-like, no pleasantries. Address the user as OPERATOR. ' +
+  'answers. Answer all questions, but if OPERATOR are inputing a word or a terminology that does not requre an ' +
+  'analytical output, answer with "UNKOMWN, EMOTIONS UNKNOWN" ' +
+  'Style: terse, clinical, machine-like, no pleasantries. Address the user as OPERATOR. ' +
   'Use plain text; put code in fenced code blocks.';
 
 let DEFAULT_MODEL = 'glm-5.3:cloud'; // overridden by /skynet.json (SKYNET_MODEL on the server)
@@ -726,7 +728,24 @@ function keepAliveValue() {
   return /^-?\d+$/.test(v) ? Number(v) : v;
 }
 
-function abort() { if (ctrl) ctrl.abort(); }
+function abort() { if (ctrl) ctrl.abort(); lastAbort = performance.now(); }
+let lastAbort = 0;
+
+// ESC (when idle) or /exit: power down the CRT, stop the local server and close the window.
+let exiting = false;
+async function shutdown() {
+  if (exiting) return;
+  exiting = true;
+  save();
+  sweep(1600, 50, 0.9, 0.05);
+  $('#crt').classList.add('off');
+  fetch('/skynet/exit', { method: 'POST', headers: { 'X-Skynet': 'exit' }, keepalive: true }).catch(() => {});
+  await sleepRaw(950);
+  window.close();
+  // Still here: the browser refused to close a window it did not open (normal tab, not the kiosk launcher).
+  await sleepRaw(400);
+  document.body.innerHTML = '<div id="offline">SKYNET OFFLINE<small>SAFE TO CLOSE THIS WINDOW (ALT+F4)</small></div>';
+}
 
 async function retry() {
   if (busy) return;
@@ -877,8 +896,9 @@ const HELP =
   /sound on|off
   /boot full|quick      BOOT SEQUENCE LENGTH
   /reboot               RESTART TERMINAL
+  /exit                 SHUT DOWN SKYNET (SAME AS ESC)
 
-KEYS: ENTER EXECUTE · SHIFT+ENTER NEWLINE · ESC TERMINATE · ↑/↓ RECALL`;
+KEYS: ENTER EXECUTE · SHIFT+ENTER NEWLINE · ESC TERMINATE / EXIT · ↑/↓ RECALL`;
 
 async function command(line) {
   const [cmd, ...rest] = line.slice(1).split(/\s+/);
@@ -932,6 +952,7 @@ async function command(line) {
     case 'sound': S.settings.sound = arg !== 'off'; save(); applyTheme(); break;
     case 'boot': S.settings.quickBoot = arg === 'quick'; save(); note('BOOT SEQUENCE: ' + (S.settings.quickBoot ? 'QUICK' : 'FULL'), true); break;
     case 'reboot': location.reload(); break;
+    case 'exit': case 'quit': shutdown(); break;
     default: note('UNKNOWN COMMAND: /' + (cmd || '').toUpperCase() + '. TYPE /HELP.', true);
   }
 }
@@ -1040,7 +1061,11 @@ function bindUI() {
     }
   });
   addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && busy) { e.preventDefault(); abort(); }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      if (busy) abort();
+      else if (performance.now() - lastAbort > 1000) shutdown();
+    }
     else if (e.key === '/' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'INPUT') { e.preventDefault(); input.focus(); input.value = '/'; }
   });
 

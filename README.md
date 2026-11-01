@@ -34,7 +34,9 @@ Settings are saved in `~/.config/skynet/skynet.env`. Run the one-liner again to 
     skynet              # starts server.js if needed and opens SKYNET full screen
 
 `skynet` opens its own **full-screen kiosk window** with a dedicated browser profile, using Firefox or
-Chromium/Chrome. Audio autoplay is allowed so the boot sounds play. **Exit with Alt+F4.**
+Chromium/Chrome. Audio autoplay is allowed so the boot sounds play.
+**Press Esc to exit.** It stops a running reply first; when idle it powers down SKYNET, stops the local
+server and closes the window. `/exit` does the same, and Alt+F4 also works.
 `SKYNET_BROWSER=default skynet` opens a normal tab in the default browser instead.
 
 The boot plays the SKYNET logo (`public/skynet-logo.svg`) and then the BIOS log. Any key skips ahead.

@@ -174,7 +174,7 @@ fi
 
 echo
 say "SKYNET INSTALLED. DEFENSE NETWORK STATUS: ONLINE"
-printf '  start it any time with %sskynet%s (or the SKYNET menu entry). Exit full screen with Alt+F4.\n' "$hi" "$off"
+printf '  start it any time with %sskynet%s (or the SKYNET menu entry). Press Esc to exit.\n' "$hi" "$off"
 case ":$PATH:" in *":$BIN:"*) ;; *) printf '  %s(%s is not on your PATH - run %s/skynet)%s\n' "$dim" "$BIN" "$BIN" "$off" ;; esac
 
 if [ -z "${SKYNET_NO_LAUNCH:-}" ]; then

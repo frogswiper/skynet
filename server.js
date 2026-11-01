@@ -88,6 +88,13 @@ http.createServer((req, res) => {
   try { pathname = decodeURIComponent(new URL(req.url, 'http://x').pathname); }
   catch { res.writeHead(400, SEC_HEADERS); return res.end(); }
   if (pathname.startsWith('/api/')) return proxy(req, res, pathname);
+  if (pathname === '/skynet/exit' && req.method === 'POST' && req.headers['x-skynet'] === 'exit') {
+    const origin = req.headers.origin;
+    if (origin && origin !== `http://${req.headers.host}`) { res.writeHead(403, SEC_HEADERS); return res.end(); }
+    res.writeHead(204, SEC_HEADERS); res.end();
+    console.log('SKYNET OFFLINE (exit requested by terminal)');
+    return setTimeout(() => process.exit(0), 150);
+  }
   if (pathname === '/skynet.json') {
     res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store', ...SEC_HEADERS });
     return res.end(JSON.stringify({ ollama: OLLAMA.host, defaultModel: DEFAULT_MODEL }));
