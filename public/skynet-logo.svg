@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 610" role="img" aria-label="SKYNET - Neural Net-Based Artificial Intelligence - Cyberdyne Systems Corporation">
+  <!-- Vector redraw of the SKYNET boot logo (striped red delta split by a Y). -->
+  <defs>
+    <linearGradient id="red" x1="0" y1="20" x2="0" y2="376" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e8361f"/>
+      <stop offset=".55" stop-color="#bb1f13"/>
+      <stop offset="1" stop-color="#7a0e08"/>
+    </linearGradient>
+    <pattern id="stripes" width="10" height="7" patternUnits="userSpaceOnUse">
+      <rect y="4.4" width="10" height="2.6" fill="#000" fill-opacity=".82"/>
+    </pattern>
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#d4d4d4"/>
+      <stop offset=".5" stop-color="#9a9a9a"/>
+      <stop offset="1" stop-color="#c8c8c8"/>
+    </linearGradient>
+    <mask id="ycut" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="610">
+      <path d="M500 20 L870 376 H130 Z" fill="#fff"/>
+      <g stroke="#000" stroke-width="18" fill="none" stroke-linejoin="miter" stroke-miterlimit="10">
+        <path d="M363.6 98.75 L500 230 L636.4 98.75"/>
+        <path d="M500 230 V400"/>
+      </g>
+    </mask>
+    <mask id="slit" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="610">
+      <rect width="1000" height="610" fill="#fff"/>
+      <rect y="437" width="1000" height="2.5" fill="#000"/>
+    </mask>
+  </defs>
+
+  <g mask="url(#ycut)">
+    <path d="M500 20 L870 376 H130 Z" fill="url(#red)"/>
+    <path d="M500 20 L870 376 H130 Z" fill="url(#stripes)"/>
+  </g>
+
+  <!-- Wordmark: six extended rounded-square letters, 110 wide, 132 pitch -->
+  <g mask="url(#slit)"><g transform="translate(115 402)" fill="none" stroke="url(#steel)" stroke-width="16" stroke-linecap="butt" stroke-linejoin="round">
+    <path d="M102 8 H22 Q8 8 8 22 V26 Q8 40 22 40 H88 Q102 40 102 54 V58 Q102 72 88 72 H8"/>
+    <g transform="translate(132 0)"><path d="M8 8 V72 M8 40 H46 L102 8 M46 40 L102 72"/></g>
+    <g transform="translate(264 0)"><path d="M8 8 V22 Q8 36 22 36 H88 Q102 36 102 22 V8 M55 36 V72"/></g>
+    <g transform="translate(396 0)"><path d="M8 72 V8 L102 72 V8"/></g>
+    <g transform="translate(528 0)"><path d="M102 8 H22 Q8 8 8 22 V58 Q8 72 22 72 H102 M8 40 H92"/></g>
+    <g transform="translate(660 0)"><path d="M0 8 H110 M55 8 V72"/></g>
+  </g></g>
+
+  <text x="105" y="545" textLength="790" lengthAdjust="spacingAndGlyphs"
+        font-family="'Liberation Sans', Arial, Helvetica, sans-serif" font-size="38" fill="#fff">NEURAL NET-BASED ARTIFICIAL INTELLIGENCE</text>
+  <text x="290" y="588" textLength="420" lengthAdjust="spacing"
+        font-family="'Liberation Mono', 'DejaVu Sans Mono', monospace" font-size="19" fill="#c3271b">CYBERDYNE SYSTEMS CORPORATION</text>
+</svg>

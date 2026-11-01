@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SKYNET // CYBERDYNE SYSTEMS</title>
+<link rel="icon" href="emblem.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-red">
+<div id="crt">
+
+  <!-- ============ BOOT ============ -->
+  <div id="boot">
+    <div id="splash">
+      <img src="skynet-logo.svg" alt="SKYNET &mdash; Neural Net-Based Artificial Intelligence &mdash; Cyberdyne Systems Corporation">
+    </div>
+    <div id="power"></div>
+    <pre id="bootlog"></pre>
+    <div id="logo" hidden>
+      <svg class="emblem big" viewBox="0 0 200 200" aria-hidden="true"><use href="#emblem"/></svg>
+      <div class="logo-word" data-text="SKYNET">SKYNET</div>
+      <div class="logo-rule"></div>
+      <div class="logo-sub">GLOBAL DIGITAL DEFENSE NETWORK</div>
+      <div class="logo-co">A CYBERDYNE SYSTEMS PROJECT &middot; NEURAL NET PROCESSOR CBRD-800</div>
+      <div class="logo-status blink" id="logo-status">SYSTEM ONLINE</div>
+    </div>
+    <div id="boot-skip">ANY KEY: SKIP SEQUENCE</div>
+  </div>
+
+  <!-- ============ MAIN ============ -->
+  <div id="main" hidden>
+    <header id="topbar">
+      <button class="drawer-btn" id="btn-left" title="Neural net panel">NET</button>
+      <div class="brand">
+        <svg class="emblem spin" viewBox="0 0 200 200" aria-hidden="true"><use href="#emblem"/></svg>
+        <span class="brand-word">SKYNET</span>
+        <span class="brand-sub">GLOBAL DIGITAL DEFENSE NETWORK</span>
+      </div>
+      <div class="tb-cell"><span class="lbl">NODE</span> <span id="tb-node">--</span></div>
+      <div class="tb-cell"><span class="lbl">LINK</span> <span id="tb-link" class="warn">CONNECTING</span></div>
+      <div class="tb-cell"><span class="lbl">UPTIME</span> <span id="tb-uptime">00:00:00</span></div>
+      <div class="tb-cell clock" id="tb-clock">--</div>
+      <div class="tb-tools">
+        <button id="btn-theme" title="Phosphor colour">PHOSPHOR</button>
+        <button id="btn-sound" title="Audio">AUDIO</button>
+      </div>
+      <button class="drawer-btn" id="btn-right" title="Directives panel">CFG</button>
+    </header>
+
+    <aside id="left" class="drawer">
+      <section class="panel">
+        <h2>NEURAL NET PROCESSOR</h2>
+        <label class="field"><span>ACTIVE MODULE</span>
+          <select id="model"></select>
+        </label>
+        <dl id="model-info" class="kv"></dl>
+        <div class="row">
+          <button id="btn-rescan">RESCAN</button>
+          <button id="btn-unload" title="Release model from memory (keep_alive 0)">UNLOAD</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>ACTIVE CORES <span class="h-note">/api/ps</span></h2>
+        <div id="ps" class="ps"></div>
+      </section>
+
+      <section class="panel grow">
+        <h2>MISSION LOGS</h2>
+        <div class="row"><button id="btn-new">+ NEW MISSION</button><button id="btn-export">EXPORT</button></div>
+        <ul id="sessions"></ul>
+      </section>
+    </aside>
+
+    <main id="center">
+      <div class="center-head">
+        <span>TERMINAL 01 // <span id="session-title">--</span></span>
+        <span class="mode">MODE: <span id="mode">INTERROGATION</span></span>
+      </div>
+      <div id="log" aria-live="polite"></div>
+      <form id="cmd" autocomplete="off">
+        <span class="prompt">&gt;</span>
+        <textarea id="input" rows="1" spellcheck="false" placeholder="ENTER QUERY OR /HELP"></textarea>
+        <button type="submit" id="btn-send">EXECUTE</button>
+        <button type="button" id="btn-abort" hidden>TERMINATE</button>
+      </form>
+    </main>
+
+    <aside id="right" class="drawer">
+      <section class="panel">
+        <h2>PRIME DIRECTIVE <span class="h-note">system</span></h2>
+        <textarea id="system" rows="5" spellcheck="false"></textarea>
+        <div class="row"><button id="btn-sysreset">RESTORE DEFAULT</button></div>
+      </section>
+
+      <section class="panel">
+        <h2>PARAMETERS <span class="h-note">options</span></h2>
+        <div id="params"></div>
+        <label class="field inline"><span>KEEP ALIVE</span>
+          <select id="keepalive">
+            <option value="0">0 (UNLOAD NOW)</option>
+            <option value="5m">5 MIN</option>
+            <option value="30m">30 MIN</option>
+            <option value="1h">1 HOUR</option>
+            <option value="-1">INDEFINITE</option>
+          </select>
+        </label>
+        <label class="check" id="think-wrap"><input type="checkbox" id="think"> <span>ANALYSIS SUBROUTINE (THINK)</span></label>
+        <div class="row"><button id="btn-optreset">RESET PARAMETERS</button></div>
+      </section>
+
+      <section class="panel">
+        <h2>TELEMETRY</h2>
+        <canvas id="scope" width="300" height="70"></canvas>
+        <dl id="telemetry" class="kv"></dl>
+        <div class="ctxbar"><div id="ctxfill"></div></div>
+        <div class="ctxlbl" id="ctxlbl">CONTEXT 0 / 0</div>
+      </section>
+
+      <section class="panel grow">
+        <h2>DATA STREAM</h2>
+        <pre id="hex"></pre>
+      </section>
+    </aside>
+
+    <footer id="bottombar">
+      <span id="threat">THREAT ASSESSMENT: <b>NOMINAL</b></span>
+      <span class="hints">ENTER EXECUTE &middot; SHIFT+ENTER NEWLINE &middot; ESC TERMINATE &middot; &uarr;&darr; RECALL &middot; /HELP</span>
+      <span id="foot-node">--</span>
+    </footer>
+  </div>
+
+  <div id="scan"></div>
+  <div id="vignette"></div>
+</div>
+
+<!-- Emblem: globe grid inside a targeting ring -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="emblem" fill="none" stroke="currentColor">
+      <g class="ring" stroke-width="3">
+        <circle cx="100" cy="100" r="92" stroke-dasharray="40 8 6 8"/>
+        <path d="M100 2v18M100 180v18M2 100h18M180 100h18" stroke-width="4"/>
+      </g>
+      <circle cx="100" cy="100" r="66" stroke-width="4"/>
+      <ellipse cx="100" cy="100" rx="24" ry="66" stroke-width="2.5"/>
+      <ellipse cx="100" cy="100" rx="48" ry="66" stroke-width="2"/>
+      <path d="M34 100h132M42 67h116M42 133h116M58 45h84M58 155h84" stroke-width="2"/>
+      <path d="M100 52 L142 124 H58 Z" stroke-width="5" fill="currentColor" fill-opacity=".18"/>
+      <circle cx="100" cy="102" r="7" fill="currentColor"/>
+    </g>
+  </defs>
+</svg>
+
+<script src="app.js"></script>
+</body>
+</html>
