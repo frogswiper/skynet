@@ -30,7 +30,9 @@ if [ "${SKYNET_BROWSER:-}" = "default" ]; then
   open_default
 elif command -v firefox >/dev/null; then
   # Snap Firefox cannot read hidden directories, so its profile lives under ~/snap.
-  if readlink -f "$(command -v firefox)" | grep -q '/snap/'; then
+  # Ubuntu's /usr/bin/firefox is a shell wrapper around /snap/bin/firefox, not a symlink.
+  ff="$(command -v firefox)"
+  if readlink -f "$ff" | grep -q '^/snap/' || { [ -x /snap/bin/firefox ] && grep -qs '/snap/bin/firefox' "$ff"; }; then
     PROFILE="$HOME/snap/firefox/common/skynet-profile"
   else
     PROFILE="${XDG_DATA_HOME:-$HOME/.local/share}/skynet/firefox-profile"
