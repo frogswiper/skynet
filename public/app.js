@@ -191,6 +191,11 @@ async function splash() {
 async function boot() {
   const bootEl = $('#boot');
   await splash();
+  await WHERE.zoom({
+    root: $('#zoomer'), canvas: $('#zoom-map'), top: $('#zm-top'), tag: $('#zm-tag'), bottom: $('#zm-bottom'),
+    place: await WHERE.ready(1500), quick: S.settings.quickBoot, colors: zoomColors(),
+    title: 'SKYNET GLOBAL SURVEILLANCE // LOCATING OPERATOR', acquired: 'OPERATOR LOCATED',
+  });
   audio();
   const skip = () => { skipping = true; };
   addEventListener('keydown', skip); addEventListener('pointerdown', skip);
@@ -292,6 +297,7 @@ function startMain() {
   setInterval(tickClock, 1000); tickClock();
   startHex();
   startScope();
+  WHERE.loadWeather(); setInterval(WHERE.loadWeather, 15 * 60e3);
   updateTelemetry(null);
   $('#input').focus();
 }
@@ -613,7 +619,7 @@ function scheduleRender() {
 /* ---------- chat ---------- */
 function buildMessages(s) {
   const out = [];
-  const sys = (S.settings.system || '').trim();
+  const sys = ((S.settings.system || '') + WHERE.context()).trim();
   if (sys) out.push({ role: 'system', content: sys });
   for (const m of s.messages) {
     if (m.role === 'user') out.push({ role: 'user', content: m.content });
@@ -895,6 +901,8 @@ const HELP =
   /theme red|amber|green
   /sound on|off
   /boot full|quick      BOOT SEQUENCE LENGTH
+  /weather [place]      ATMOSPHERIC SCAN / PIN A LOCATION (ALSO THE BOOT TRACE)
+  /locate               LOCATE THIS TERMINAL AGAIN (UNDOES A PINNED PLACE)
   /reboot               RESTART TERMINAL
   /exit                 SHUT DOWN SKYNET (SAME AS ESC)
 
@@ -950,6 +958,17 @@ async function command(line) {
       if (THEMES.includes(arg)) { S.settings.theme = arg; save(); applyTheme(); } else note('THEMES: ' + THEMES.join(' / ').toUpperCase(), true);
       break;
     case 'sound': S.settings.sound = arg !== 'off'; save(); applyTheme(); break;
+    case 'locate': case 'weather': {
+      const auto = cmd.toLowerCase() === 'locate' || /^(auto|here)$/i.test(arg);
+      if (!arg && !auto) { note(WHERE.report() || 'ATMOSPHERIC SENSORS OFFLINE.', true); break; }
+      const el = note((auto ? 'TRIANGULATING THIS TERMINAL' : 'LOCATING ' + arg.toUpperCase()) + ' ...', true);
+      const p = auto ? await WHERE.locate(true) : await WHERE.search(arg).catch(() => null);
+      if (!p) { el.textContent = 'LOCATION NOT FOUND: ' + arg.toUpperCase(); break; }
+      el.textContent = `POSITION: ${p.name}, ${p.country}  ${p.lat.toFixed(3)} ${p.lon.toFixed(3)}  (${WHERE.srcLabel(p)})`;
+      await WHERE.loadWeather();
+      note(WHERE.report() || 'ATMOSPHERIC SENSORS OFFLINE.', true);
+      break;
+    }
     case 'boot': S.settings.quickBoot = arg === 'quick'; save(); note('BOOT SEQUENCE: ' + (S.settings.quickBoot ? 'QUICK' : 'FULL'), true); break;
     case 'reboot': location.reload(); break;
     case 'exit': case 'quit': shutdown(); break;
@@ -1102,6 +1121,7 @@ function bindUI() {
   $('#btn-sound').onclick = () => { S.settings.sound = !S.settings.sound; save(); applyTheme(); beep(700, 0.05); };
   $('#btn-left').onclick = () => $('#left').classList.toggle('open');
   $('#btn-right').onclick = () => $('#right').classList.toggle('open');
+  $('#wx-panel').onclick = () => { const r = WHERE.report(); if (r) note(r, true); else WHERE.loadWeather(); };
 
   $('#log').addEventListener('click', (e) => {
     const b = e.target.closest('button.copy');
@@ -1114,4 +1134,17 @@ function bindUI() {
 
 /* ---------- go ---------- */
 document.body.className = 'theme-' + S.settings.theme;
+// Bitmap colours for the boot trace follow the phosphor theme.
+function zoomColors() {
+  const cs = getComputedStyle(document.body), v = (k) => cs.getPropertyValue(k).trim();
+  const red = S.settings.theme === 'red';
+  return { land: v('--mid'), water: '#010401', river: v('--dim'), target: red ? '#ffffff' : '#ff2a1a', lock: red ? v('--hi') : '#ffffff' };
+}
+WHERE.setup({
+  get: () => S.settings.place || null,
+  set: (p) => { S.settings.place = p; save(); },
+  onChange: () => { if (!$('#main').hidden) WHERE.loadWeather(); },
+  beep, sweep,
+});
+WHERE.locate();          // runs during the logo splash, so the trace can target this computer
 boot();

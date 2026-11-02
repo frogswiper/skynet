@@ -16,6 +16,12 @@
       <img src="skynet-logo.svg" alt="SKYNET &mdash; Neural Net-Based Artificial Intelligence &mdash; Cyberdyne Systems Corporation">
     </div>
     <div id="power"></div>
+    <div id="zoomer" hidden>
+      <canvas id="zoom-map"></canvas>
+      <div id="zm-top"></div>
+      <div id="zm-tag"></div>
+      <div id="zm-bottom"></div>
+    </div>
     <pre id="bootlog"></pre>
     <div id="logo" hidden>
       <svg class="emblem big" viewBox="0 0 200 200" aria-hidden="true"><use href="#emblem"/></svg>
@@ -88,6 +94,14 @@
     </main>
 
     <aside id="right" class="drawer">
+      <section class="panel wx-panel" id="wx-panel" title="Click: weather report in the terminal">
+        <h2>ATMOSPHERIC SCAN <span class="h-note" id="wx-place">--</span></h2>
+        <div class="wx-now"><span id="wx-temp">--°</span><span id="wx-cond">ACQUIRING</span></div>
+        <dl id="wx-kv" class="kv"></dl>
+        <div id="wx-hours" class="wx-hours"></div>
+        <div class="wx-foot"><span id="wx-time">--</span><span>OPEN-METEO</span></div>
+      </section>
+
       <section class="panel">
         <h2>PRIME DIRECTIVE <span class="h-note">system</span></h2>
         <textarea id="system" rows="5" spellcheck="false"></textarea>
@@ -153,6 +167,9 @@
   </defs>
 </svg>
 
+<script src="worldmap.js"></script>
+<script src="detailmap.js"></script>
+<script src="where.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -62,7 +62,15 @@ Chromium/Chrome. Audio autoplay is allowed so the boot sounds play.
 server and closes the window. `/exit` does the same, and Alt+F4 also works.
 `SKYNET_BROWSER=default skynet` opens a normal tab in the default browser instead.
 
-The boot plays the SKYNET logo (`public/skynet-logo.svg`) and then the BIOS log. Any key skips ahead.
+The boot plays the SKYNET logo (`public/skynet-logo.svg`), then a **surveillance trace**: an LED-bitmap
+world, in the phosphor colour, zooms in on this computer until "OPERATOR LOCATED". Then the BIOS log.
+Any key skips ahead.
+
+The **ATMOSPHERIC SCAN** panel (top of the right column) shows the local weather from
+[Open-Meteo](https://open-meteo.com) (no key): temperature, conditions, wind and the next six hours. Click it, or type
+`/weather`, for a report; the model also gets the current weather so you can ask it.
+
+**Where it thinks you are**: at every start it locates the computer. It uses the browser's location only when that is precise (under 5 km, e.g. Windows location services or Wi-Fi); otherwise it uses your IP address via BigDataCloud's free client API. Place names come from Open-Meteo's geocoder, so local spellings like Hønefoss survive. `/weather <place>` pins a place, and `/locate` goes back to automatic. Coordinates are sent only to BigDataCloud and Open-Meteo and are stored in the browser.
 
 ## Manual / development
 
@@ -75,6 +83,9 @@ Env vars: `SKYNET_PORT` (8484), `SKYNET_BIND` (127.0.0.1), `OLLAMA_URL` (http://
 - `server.js` has no dependencies. It serves `public/` and proxies only these endpoints:
   version, tags, ps, show, chat, generate, pull. Delete/create/push are blocked.
 - Mission logs, settings and history are stored in the browser's localStorage (`skynet.v1`).
+- `public/worldmap.js` (Natural Earth 1:110m) and `public/detailmap.js` (1:10m inset of southern Norway) are public-domain
+  map data built by `tools/build-map.py` and `tools/build-detail.py`. `public/where.js` (location, weather, boot zoom) is
+  shared with [W.O.P.R.](https://github.com/frogswiper/wopr).
 - Type `/help` in the terminal to see the command list. Pick any other installed model in the NET panel.
 
 ---
