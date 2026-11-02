@@ -48,7 +48,7 @@ The Windows installer:
 6. installs SKYNET to `%LOCALAPPDATA%\skynet\app`, saves settings to `%APPDATA%\skynet\skynet.env`, adds
    **Start Menu and desktop shortcuts** and the `skynet` command (new terminals), then launches it
 
-It opens full screen in its own **Edge** kiosk window (Chrome or Brave if Edge is missing), with
+It opens full screen in its own **Chrome** kiosk window (Edge if Chrome isn't installed, then Brave), with
 autoplay allowed. Esc exits; Alt+F4 also works. Set options the same way as on Linux, e.g.
 `$env:SKYNET_MODEL = 'glm-5.2:cloud'; irm … | iex`. Run the one-liner again to update.
 
@@ -56,8 +56,21 @@ autoplay allowed. Esc exits; Alt+F4 also works. Set options the same way as on L
 
     skynet              # starts server.js if needed and opens SKYNET full screen
 
-`skynet` opens its own **full-screen kiosk window** with a dedicated browser profile, using Firefox or
-Chromium/Chrome. Audio autoplay is allowed so the boot sounds play.
+`skynet` opens its own **full-screen kiosk window** with a dedicated browser profile. Audio autoplay is
+allowed so the boot sounds play.
+
+Browsers: Firefox and every Chromium-family browser (Chrome, Chromium, Brave, Edge, Vivaldi) work. Each
+gets its own profile, with sound allowed and location pre-allowed for this page only, so no prompts appear.
+Pick one with `SKYNET_BROWSER` (in the shell, or in the settings file):
+
+| `SKYNET_BROWSER` | Linux / macOS | Windows |
+|---|---|---|
+| `auto` (default) | Firefox, else Chrome/Chromium/Brave/Edge | Chrome, else Edge, else Brave |
+| `chrome` | a Chromium-family browser | Chrome |
+| `firefox` | Firefox | — |
+| `edge` / `brave` | — | that browser |
+| `default` | a normal tab in the default browser | a normal tab |
+
 **Press Esc to exit.** It stops a running reply first; when idle it powers down SKYNET, stops the local
 server and closes the window. `/exit` does the same, and Alt+F4 also works.
 `SKYNET_BROWSER=default skynet` opens a normal tab in the default browser instead.
