@@ -21,13 +21,14 @@ curl -fsSL https://raw.githubusercontent.com/frogswiper/skynet/main/install.sh |
 
 The installer:
 
-1. installs **Ollama** if it isn't present (official `ollama.com` installer)
+1. installs **Ollama** if it isn't present (official `ollama.com` installer; on a Mac that is the Ollama app)
 2. starts the Ollama server if it isn't running
 3. runs `ollama signin`. If a link is shown, open it, approve, and the install continues
 4. finds the **newest GLM cloud model** on ollama.com (currently `glm-5.3:cloud`) and pulls it
 5. uses the system Node.js 18+ if there is one; otherwise it downloads a checksum-verified Node 22
    into `~/.local/share/skynet/node` (no sudo)
-6. installs SKYNET to `~/.local/share/skynet/app`, adds the `skynet` command and a menu entry, then launches it
+6. installs SKYNET to `~/.local/share/skynet/app`, adds the `skynet` command and a menu entry (on a Mac: a
+   **SKYNET app** in `~/Applications`), then launches it
 
 Options (set before `bash`, e.g. `curl … | SKYNET_MODEL=glm-5.2:cloud bash`):
 
@@ -38,6 +39,21 @@ Options (set before `bash`, e.g. `curl … | SKYNET_MODEL=glm-5.2:cloud bash`):
 | `SKYNET_NO_LAUNCH` | — | set to `1` to skip launching at the end |
 
 Settings are saved in `~/.config/skynet/skynet.env`. Run the one-liner again to update.
+
+### macOS
+
+The same one-liner works on macOS 12 or newer (Apple silicon and Intel). Paste it into **Terminal**.
+
+- Ollama is installed as the normal **Ollama app** in `/Applications` (it may ask for your password once to
+  add the `ollama` command). SKYNET starts it if it isn't running.
+- SKYNET gets its own app, **`~/Applications/SKYNET.app`**. Open it from Launchpad or Spotlight, or drag it to the Dock.
+- It opens in a full-screen window of Firefox, Chrome, Chromium, Brave, Edge or Vivaldi, whichever is in
+  `/Applications`, using its own profile. Safari has no kiosk mode; `SKYNET_BROWSER=default` opens a normal tab in your default browser (e.g. Safari).
+  When SKYNET shuts down (Esc), that browser window quits too.
+- The first time, macOS may ask whether the browser may use your location. If you say no, SKYNET uses your IP
+  address instead.
+- To use the `skynet` command in Terminal, add `~/.local/bin` to your PATH:
+  `echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zprofile` (then open a new Terminal window).
 
 ## Install on Windows 10 / 11
 
