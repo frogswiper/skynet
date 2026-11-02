@@ -299,6 +299,11 @@ function startMain() {
   startScope();
   checkBuild(); setInterval(checkBuild, 5 * 60e3);
   WHERE.loadWeather(); setInterval(WHERE.loadWeather, 15 * 60e3);
+  INCURSIONS.start({
+    beep, sweep,
+    operator: () => WHERE.place(),
+    onSighting: (t) => hexPush(`<span class="t">; TEMPORAL EVENT ${esc(t.unit)} ${t.when.y} ${esc(t.city)}</span>`),
+  });
   updateTelemetry(null);
   $('#input').focus();
 }
@@ -308,6 +313,7 @@ function applyTheme() {
   $('#btn-sound').textContent = S.settings.sound ? 'AUDIO: ON' : 'AUDIO: OFF';
   $('#btn-theme').textContent = 'PHOSPHOR: ' + S.settings.theme.toUpperCase();
   scopeColors = null;
+  if (window.INCURSIONS) INCURSIONS.recolor();
 }
 
 function tickClock() {
@@ -906,6 +912,7 @@ const HELP =
   /boot full|quick      BOOT SEQUENCE LENGTH
   /weather [place]      ATMOSPHERIC SCAN / PIN A LOCATION (ALSO THE BOOT TRACE)
   /locate               LOCATE THIS TERMINAL AGAIN (UNDOES A PINNED PLACE)
+  /sightings            TEMPORAL INCURSION LOG (TERMINATOR UNITS ACROSS TIME)
   /reboot               RESTART TERMINAL
   /exit                 SHUT DOWN SKYNET (SAME AS ESC)
 
@@ -917,6 +924,7 @@ async function command(line) {
   const s = cur();
   switch ((cmd || '').toLowerCase()) {
     case 'help': case '?': note(HELP, true); break;
+    case 'sightings': case 'incursions': note(INCURSIONS.report(), true); break;
     case 'new': if (!busy) { newSession(); renderSessions(); renderLog(); } break;
     case 'clear':
       if (busy) return;
@@ -1125,6 +1133,7 @@ function bindUI() {
   $('#btn-left').onclick = () => $('#left').classList.toggle('open');
   $('#btn-right').onclick = () => $('#right').classList.toggle('open');
   $('#wx-panel').onclick = () => { const r = WHERE.report(); if (r) note(r, true); else WHERE.loadWeather(); };
+  $('#tt-panel').onclick = () => note(INCURSIONS.report(), true);
 
   $('#log').addEventListener('click', (e) => {
     const b = e.target.closest('button.copy');

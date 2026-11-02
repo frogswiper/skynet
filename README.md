@@ -127,6 +127,11 @@ The **ATMOSPHERIC SCAN** panel (top of the right column) shows the local weather
 [Open-Meteo](https://open-meteo.com) (no key): temperature, conditions, wind and the next six hours. Click it, or type
 `/weather`, for a report; the model also gets the current weather so you can ask it.
 
+The **TEMPORAL INCURSIONS** panel (left column) is a line map of the world that tracks Terminator units
+(T-800, T-1000, T-X, REV-9 …) as they arrive through time displacement, at random places every 20–50 seconds.
+Each sighting shows where it was found, the date and time it materialised, and the year it was sent from.
+Click the panel, or type `/sightings`, for the full incursion log. It's all made up, generated in the browser.
+
 **Where it thinks you are**: at every start it locates the computer. It uses the browser's location only when that is precise (under 5 km, e.g. Windows location services or Wi-Fi); otherwise it uses your IP address via BigDataCloud's free client API. Place names come from Open-Meteo's geocoder, so local spellings like Hønefoss survive. `/weather <place>` pins a place, and `/locate` goes back to automatic. Coordinates are sent only to BigDataCloud and Open-Meteo and are stored in the browser.
 
 ## Manual / development
