@@ -458,6 +458,8 @@ function buildOptions() {
   const o = {};
   for (const [k, v] of Object.entries(S.settings.options)) {
     if (v === '' || v == null || Number.isNaN(v)) continue;
+    // -1 (unlimited) is Ollama's default; cloud models reject it outright ("max_tokens must be positive").
+    if (k === 'num_predict' && Number(v) < 0) continue;
     o[k] = Number(v);
   }
   return o;
