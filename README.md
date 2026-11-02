@@ -3,6 +3,16 @@
 A 1984 Cyberdyne-style phosphor HUD for Ollama. It runs full screen, boots on the SKYNET logo,
 and talks to local or Ollama cloud models. By default it uses the newest **GLM cloud model**.
 
+
+![SKYNET terminal](docs/screenshots/skynet-4-terminal.jpg)
+
+## Screenshots
+
+| | |
+|---|---|
+| <img src="docs/screenshots/skynet-1-logo.jpg" width="420" alt="Boot: the SKYNET logo"><br><sub>Boot: the SKYNET logo</sub> | <img src="docs/screenshots/skynet-2-trace.jpg" width="420" alt="Surveillance trace: zooming in on this computer"><br><sub>Surveillance trace: zooming in on this computer</sub> |
+| <img src="docs/screenshots/skynet-3-located.jpg" width="420" alt="OPERATOR LOCATED"><br><sub>OPERATOR LOCATED</sub> | <img src="docs/screenshots/skynet-4-terminal.jpg" width="420" alt="The terminal, with the ATMOSPHERIC SCAN weather panel"><br><sub>The terminal, with the ATMOSPHERIC SCAN weather panel</sub> |
+
 ## Install on Linux / macOS (one line)
 
 ```bash
