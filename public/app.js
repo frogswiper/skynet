@@ -297,6 +297,7 @@ function startMain() {
   setInterval(tickClock, 1000); tickClock();
   startHex();
   startScope();
+  checkBuild(); setInterval(checkBuild, 5 * 60e3);
   WHERE.loadWeather(); setInterval(WHERE.loadWeather, 15 * 60e3);
   updateTelemetry(null);
   $('#input').focus();
@@ -1130,6 +1131,16 @@ function bindUI() {
     navigator.clipboard.writeText(code).then(() => { b.textContent = 'COPIED'; setTimeout(() => { b.textContent = 'COPY'; }, 1200); },
       () => { b.textContent = 'DENIED'; });
   });
+}
+
+// Footer: installed build, and a notice when a newer version has been downloaded (applied at next start).
+async function checkBuild() {
+  const j = await getJSON('/skynet.json', 3000).catch(() => null);
+  const el = $('#foot-ver');
+  if (!j || !el) return;
+  const v = j.version === 'dev' ? 'DEV' : String(j.version || '?').slice(0, 7).toUpperCase();
+  const st = j.staged && j.staged !== j.version ? String(j.staged).slice(0, 7).toUpperCase() : '';
+  el.innerHTML = 'BUILD ' + esc(v) + (st ? ` · <b class="upd">UPDATE ${esc(st)} READY · RESTART TO APPLY</b>` : '');
 }
 
 /* ---------- go ---------- */

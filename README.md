@@ -52,6 +52,24 @@ It opens full screen in its own **Chrome** kiosk window (Edge if Chrome isn't in
 autoplay allowed. Esc exits; Alt+F4 also works. Set options the same way as on Linux, e.g.
 `$env:SKYNET_MODEL = 'glm-5.2:cloud'; irm … | iex`. Run the one-liner again to update.
 
+## Update to the latest version
+
+| | |
+|---|---|
+| **Linux / macOS** | `curl -fsSL https://raw.githubusercontent.com/frogswiper/skynet/main/update.sh \| bash` |
+| **Windows** (PowerShell) | `irm https://raw.githubusercontent.com/frogswiper/skynet/main/update.ps1 \| iex` |
+| from an installed copy | `skynet --update` |
+
+**SKYNET also updates itself.** Every time it starts, it checks GitHub in the background. If there is a newer
+version, it downloads it into a separate folder next to the running one (`~/.local/share/skynet/staged`, or
+`%LOCALAPPDATA%\skynet\staged` on Windows). Nothing changes while you use it. At the next start, before anything runs,
+the launcher switches to the new version. The footer shows the installed build and
+**UPDATE … READY · RESTART TO APPLY** once one is waiting. Your settings, logs and browser profile are kept.
+To turn this off, add `SKYNET_AUTO_UPDATE=0` to `~/.config/skynet/skynet.env` (Windows: `%APPDATA%\skynet\skynet.env`).
+The update commands above apply an update straight away if SKYNET is not running.
+
+Re-running the installer also updates. It additionally refreshes Ollama, the model and Node.js.
+
 ## Run
 
     skynet              # starts server.js if needed and opens SKYNET full screen

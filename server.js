@@ -13,6 +13,12 @@ const ROOT = path.join(__dirname, 'public');
 // Model the UI selects until the operator picks one. The installer writes the newest GLM cloud model here.
 const DEFAULT_MODEL = process.env.SKYNET_MODEL || 'glm-5.3:cloud';
 
+// Installed copies live in <data>/app with a .version file; a downloaded update waits in <data>/staged.
+const DATA_DIR = path.basename(__dirname) === 'app' ? path.dirname(__dirname) : null;
+function readVersion(dir) {
+  try { return fs.readFileSync(path.join(dir, '.version'), 'utf8').trim().slice(0, 40); } catch { return null; }
+}
+
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -97,7 +103,10 @@ http.createServer((req, res) => {
   }
   if (pathname === '/skynet.json') {
     res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store', ...SEC_HEADERS });
-    return res.end(JSON.stringify({ ollama: OLLAMA.host, defaultModel: DEFAULT_MODEL }));
+    return res.end(JSON.stringify({
+      ollama: OLLAMA.host, defaultModel: DEFAULT_MODEL,
+      version: readVersion(__dirname) || 'dev', staged: DATA_DIR ? readVersion(path.join(DATA_DIR, 'staged')) : null,
+    }));
   }
   serveStatic(req, res, pathname);
 }).listen(PORT, BIND, () => {

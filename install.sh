@@ -133,19 +133,26 @@ fi
 
 # ---------- 6. SKYNET ----------
 say "DOWNLOADING SKYNET ($REPO@$BRANCH)"
+# Install an exact commit and remember it, so updates can tell what is installed.
+SHA="$(curl -fsSL --max-time 20 -H 'Accept: application/vnd.github.sha' "https://api.github.com/repos/$REPO/commits/$BRANCH" 2>/dev/null || true)"
+printf '%s' "$SHA" | grep -qE '^[0-9a-f]{40}$' || SHA=""
 tmpapp="$(mktemp -d)"
-curl -fsSL "https://codeload.github.com/$REPO/tar.gz/refs/heads/$BRANCH" | tar -xz --strip-components=1 -C "$tmpapp"
+curl -fsSL "https://codeload.github.com/$REPO/tar.gz/${SHA:-refs/heads/$BRANCH}" | tar -xz --strip-components=1 -C "$tmpapp"
 [ -f "$tmpapp/server.js" ] || die "download did not contain server.js"
-rm -rf "$APP"; mkdir -p "$DATA"; mv "$tmpapp" "$APP"; chmod +x "$APP/skynet"
-ok "$APP"
+echo "${SHA:-unknown}" > "$tmpapp/.version"
+rm -rf "$APP" "$DATA/staged"; mkdir -p "$DATA"; mv "$tmpapp" "$APP"; chmod +x "$APP/skynet" "$APP/update.sh"
+ok "$APP (version ${SHA:0:7})"
 
 mkdir -p "$CONF_DIR"
+# Settings this installer does not manage (e.g. SKYNET_BROWSER=chrome) are kept.
+KEEP="$(grep -vE '^(#|SKYNET_MODEL=|SKYNET_NODE=|OLLAMA_URL=|SKYNET_PORT=|SKYNET_TTS=|ESPEAK_DATA_PATH=)' "$CONF_DIR/skynet.env" 2>/dev/null | grep -E '^[A-Za-z_][A-Za-z0-9_]*=' || true)"
 {
   echo "# Written by the SKYNET installer. Edit and restart SKYNET to change."
   echo "SKYNET_MODEL=$MODEL"
   echo "SKYNET_NODE=$NODE_BIN"
   echo "OLLAMA_URL=$OLLAMA_URL"
   if [ -n "${SKYNET_PORT:-}" ]; then echo "SKYNET_PORT=$SKYNET_PORT"; fi
+  if [ -n "$KEEP" ]; then echo "$KEEP"; fi
 } > "$CONF_DIR/skynet.env"
 ok "config $CONF_DIR/skynet.env"
 
